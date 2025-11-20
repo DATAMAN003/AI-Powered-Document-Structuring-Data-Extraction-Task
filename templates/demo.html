@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Document Extraction - Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            padding: 20px;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            opacity: 0.9;
+        }
+        
+        .stats-bar {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .stats-bar h2 {
+            color: #667eea;
+            font-size: 48px;
+            margin-bottom: 5px;
+        }
+        
+        .category-section {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .category-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #667eea;
+        }
+        
+        .category-header h2 {
+            color: #333;
+            font-size: 24px;
+        }
+        
+        .category-badge {
+            background: #667eea;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .data-table th {
+            background: #f8f9ff;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #555;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        .data-table td {
+            padding: 12px;
+            border-bottom: 1px solid #f0f0f0;
+            vertical-align: top;
+        }
+        
+        .data-table tr:hover {
+            background: #f8f9ff;
+        }
+        
+        .key-cell {
+            font-weight: 500;
+            color: #333;
+            width: 30%;
+        }
+        
+        .value-cell {
+            color: #667eea;
+            font-weight: 600;
+            width: 25%;
+        }
+        
+        .comment-cell {
+            color: #666;
+            font-size: 14px;
+            width: 45%;
+        }
+        
+        .back-link {
+            text-align: center;
+            margin-top: 30px;
+        }
+        
+        .back-link a {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 40px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: transform 0.2s;
+        }
+        
+        .back-link a:hover {
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🤖 AI Document Extraction Demo</h1>
+        <p>Sample extraction from "Data Input.pdf"</p>
+    </div>
+    
+    <div class="stats-bar">
+        <h2>{{ total }}</h2>
+        <p>Total Data Points Extracted</p>
+    </div>
+    
+    {% for category, entries in categories.items() %}
+    <div class="category-section">
+        <div class="category-header">
+            <h2>{{ category }}</h2>
+            <span class="category-badge">{{ entries|length }} entries</span>
+        </div>
+        
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Key</th>
+                    <th>Value</th>
+                    <th>Comments</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entry in entries %}
+                <tr>
+                    <td class="key-cell">{{ entry.Key }}</td>
+                    <td class="value-cell">{{ entry.Value }}</td>
+                    <td class="comment-cell">{{ entry.Comments }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endfor %}
+    
+    <div class="back-link">
+        <a href="/">← Back to Upload</a>
+    </div>
+</body>
+</html>

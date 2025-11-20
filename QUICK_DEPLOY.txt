@@ -1,0 +1,99 @@
+================================================================================
+    QUICK DEPLOY GUIDE - GET YOUR DEMO ONLINE IN 2 MINUTES!
+================================================================================
+
+OPTION 1: RAILWAY.APP (RECOMMENDED - EASIEST!)
+================================================================================
+
+Step 1: Push to GitHub
+----------------------
+cd C:\Users\TOSIN\Desktop\HMWK3
+git init
+git add .
+git commit -m "AI Document Extraction Demo"
+git remote add origin https://github.com/YOUR_USERNAME/ai-document-extraction.git
+git push -u origin main
+
+Step 2: Deploy to Railway
+--------------------------
+1. Go to: https://railway.app
+2. Click "Start a New Project"
+3. Sign in with GitHub
+4. Click "Deploy from GitHub repo"
+5. Select your repository
+6. Wait 2-3 minutes
+7. Click "Settings" → "Generate Domain"
+
+YOUR LIVE DEMO: https://your-app.up.railway.app
+
+DONE! ✅
+
+================================================================================
+OPTION 2: REPLIT (NO GITHUB NEEDED!)
+================================================================================
+
+1. Go to: https://replit.com
+2. Sign up (free)
+3. Click "+ Create Repl"
+4. Choose "Python"
+5. Upload your files (drag & drop)
+6. Click "Run"
+
+YOUR LIVE DEMO: https://ai-document-extraction.username.repl.co
+
+DONE! ✅
+
+================================================================================
+OPTION 3: VERCEL (FASTEST!)
+================================================================================
+
+npm install -g vercel
+cd C:\Users\TOSIN\Desktop\HMWK3
+vercel
+
+Follow prompts → Your demo is live!
+
+DONE! ✅
+
+================================================================================
+FILES ALREADY CREATED FOR DEPLOYMENT:
+================================================================================
+
+✅ Procfile - Tells platforms how to run your app
+✅ railway.json - Railway configuration
+✅ requirements.txt - Updated with gunicorn
+✅ app.py - Updated to use PORT environment variable
+
+You're ready to deploy immediately!
+
+================================================================================
+WHAT YOUR LIVE DEMO WILL HAVE:
+================================================================================
+
+✅ Upload interface (drag-and-drop)
+✅ Real-time PDF processing
+✅ Download Excel results
+✅ Demo page with sample data
+✅ Professional UI
+✅ Mobile responsive
+✅ HTTPS (automatic)
+
+================================================================================
+SUBMIT THIS IN YOUR ASSIGNMENT:
+================================================================================
+
+Live Demo URL: https://your-app.up.railway.app
+GitHub Repository: https://github.com/YOUR_USERNAME/ai-document-extraction
+
+================================================================================
+NEED HELP?
+================================================================================
+
+See detailed guides:
+- LIVE_DEMO_SETUP.md (comprehensive guide)
+- DEPLOY_NOW.md (step-by-step)
+- DEPLOYMENT.md (all platforms)
+
+================================================================================
+RECOMMENDED: Use Railway.app - It's the easiest and fastest!
+================================================================================
