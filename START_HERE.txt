@@ -1,0 +1,113 @@
+================================================================================
+    🚀 START HERE - SUPER SIMPLE!
+================================================================================
+
+ONE COMMAND TO RUN EVERYTHING:
+
+    python run.py
+
+That's it! No complex setup, no multiple scripts!
+
+================================================================================
+FIRST TIME SETUP (2 minutes)
+================================================================================
+
+Step 1: Install Dependencies
+-----------------------------
+pip install -r requirements.txt
+
+Step 2: (Optional) Add API Key for AI Mode
+-------------------------------------------
+1. Get FREE key: https://console.groq.com
+2. Open .env file
+3. Add your key after GROQ_API_KEY=
+4. Save
+
+Step 3: Run!
+------------
+python run.py
+
+================================================================================
+WHAT YOU'LL SEE
+================================================================================
+
+Menu with 4 options:
+
+1. Extract data (Regex - Fast, perfect for assignment)
+   - No API key needed
+   - < 2 seconds
+   - 100% accurate for assignment
+
+2. Extract data (AI - Smart, works with any PDF)
+   - Requires API key
+   - 10-60 seconds
+   - Works with ANY document
+
+3. Run web application (Upload interface)
+   - Drag and drop PDFs
+   - Download results
+   - Demo mode
+
+4. Exit
+
+================================================================================
+QUICK START EXAMPLES
+================================================================================
+
+For Assignment (Fastest):
+-------------------------
+1. python run.py
+2. Choose: 1
+3. Press Enter twice
+4. Done! Output.xlsx created ✅
+
+For Any PDF (AI):
+-----------------
+1. python run.py
+2. Choose: 2
+3. Enter PDF filename
+4. Done! ✅
+
+For Web Interface:
+------------------
+1. python run.py
+2. Choose: 3
+3. Open: http://localhost:5000
+4. Upload and extract! ✅
+
+================================================================================
+FILES YOU NEED
+================================================================================
+
+✅ run.py                    - Main script (run this!)
+✅ .env                      - Your API key (optional)
+✅ extract_data_enhanced.py  - Regex extraction
+✅ extract_data_ai.py        - AI extraction
+✅ app.py                    - Web application
+✅ Data Input.pdf            - Sample PDF
+
+================================================================================
+TROUBLESHOOTING
+================================================================================
+
+Problem: "Module not found"
+Solution: pip install -r requirements.txt
+
+Problem: "API key not configured"
+Solution: Either add key to .env OR use Option 1 (regex mode)
+
+Problem: "PDF not found"
+Solution: Put PDF in same folder or use full path
+
+================================================================================
+THAT'S IT!
+================================================================================
+
+Just run:
+    python run.py
+
+And choose what you want to do!
+
+No confusion, no complexity, just one simple script! 🎉
+
+================================================================================
