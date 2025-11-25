@@ -1,14 +1,18 @@
 """
-Flask Web Application for AI-Powered Document Extraction
-Provides a web interface for uploading PDFs and downloading structured Excel outputs
+AI-Powered Document Extraction Web Application
+Simple web interface - Always uses AI for intelligent extraction
 """
 
-from flask import Flask, render_template, request, send_file, jsonify, flash, redirect, url_for
+from flask import Flask, render_template, request, send_file, jsonify
 from werkzeug.utils import secure_filename
 import os
-from extract_data_enhanced import EnhancedDocumentExtractor
+from dotenv import load_dotenv
+from extract_data_ai import AIDocumentExtractor
 import tempfile
 from datetime import datetime
+
+# Load environment variables
+load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = 'ai-document-extraction-secret-key-2024'
@@ -29,7 +33,7 @@ def index():
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
-    """Handle PDF upload and process extraction"""
+    """Handle PDF upload and process with AI extraction"""
     if 'file' not in request.files:
         return jsonify({'error': 'No file part'}), 400
     
@@ -48,16 +52,21 @@ def upload_file():
         file.save(input_path)
         
         try:
-            # Process the PDF
-            extractor = EnhancedDocumentExtractor(input_path)
+            # Get API key
+            api_key = os.getenv('GROQ_API_KEY')
+            if not api_key:
+                return jsonify({'error': 'API key not configured. Please set GROQ_API_KEY in .env file'}), 500
+            
+            # Process with AI
+            extractor = AIDocumentExtractor(input_path, groq_api_key=api_key)
             text = extractor.extract_text_from_pdf()
-            data = extractor.identify_key_value_pairs()
+            data = extractor.analyze_document_with_ai()
             extractor.export_to_excel(output_path)
             
             # Get statistics
             categories = {}
             for entry in data:
-                cat = entry['Category']
+                cat = entry.get('category', 'Uncategorized')
                 categories[cat] = categories.get(cat, 0) + 1
             
             return jsonify({
@@ -68,7 +77,7 @@ def upload_file():
             })
         
         except Exception as e:
-            return jsonify({'error': str(e)}), 500
+            return jsonify({'error': f'Extraction failed: {str(e)}'}), 500
         
         finally:
             # Clean up input file
@@ -91,13 +100,17 @@ def download_file(filename):
 def demo():
     """Demo page with sample data"""
     try:
-        extractor = EnhancedDocumentExtractor("Data Input.pdf")
+        api_key = os.getenv('GROQ_API_KEY')
+        if not api_key:
+            return "Demo requires API key. Please set GROQ_API_KEY in .env file", 500
+        
+        extractor = AIDocumentExtractor("Data Input.pdf", groq_api_key=api_key)
         text = extractor.extract_text_from_pdf()
-        data = extractor.identify_key_value_pairs()
+        data = extractor.analyze_document_with_ai()
         
         categories = {}
         for entry in data:
-            cat = entry['Category']
+            cat = entry.get('category', 'Uncategorized')
             if cat not in categories:
                 categories[cat] = []
             categories[cat].append(entry)
@@ -108,6 +121,5 @@ def demo():
 
 
 if __name__ == '__main__':
-    import os
     port = int(os.environ.get('PORT', 5000))
     app.run(debug=False, host='0.0.0.0', port=port)
