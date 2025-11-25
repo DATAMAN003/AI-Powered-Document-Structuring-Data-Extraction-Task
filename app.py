@@ -54,19 +54,36 @@ def upload_file():
         try:
             # Get API key
             api_key = os.getenv('GROQ_API_KEY')
-            if not api_key:
+            if not api_key or api_key.strip() == '':
                 return jsonify({'error': 'API key not configured. Please set GROQ_API_KEY in .env file'}), 500
+            
+            print(f"\n🔄 Processing {filename}...")
             
             # Process with AI
             extractor = AIDocumentExtractor(input_path, groq_api_key=api_key)
+            
+            # Extract text
+            print("  📄 Extracting text from PDF...")
             text = extractor.extract_text_from_pdf()
+            print(f"  ✓ Extracted {len(text)} characters")
+            
+            # AI Analysis
+            print("  🤖 AI analyzing document...")
             data = extractor.analyze_document_with_ai()
+            print(f"  ✓ AI extracted {len(data)} entries")
+            
+            if not data or len(data) == 0:
+                return jsonify({'error': 'No data extracted. Please check your PDF content.'}), 500
+            
+            # Export to Excel
+            print("  📊 Creating Excel file...")
             extractor.export_to_excel(output_path)
+            print(f"  ✓ Excel created: {output_path}")
             
             # Get statistics
             categories = {}
             for entry in data:
-                cat = entry.get('category', 'Uncategorized')
+                cat = entry.get('Category', 'Uncategorized')
                 categories[cat] = categories.get(cat, 0) + 1
             
             return jsonify({
@@ -77,6 +94,9 @@ def upload_file():
             })
         
         except Exception as e:
+            print(f"  ❌ Error: {str(e)}")
+            import traceback
+            traceback.print_exc()
             return jsonify({'error': f'Extraction failed: {str(e)}'}), 500
         
         finally:

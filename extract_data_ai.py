@@ -96,16 +96,17 @@ Instructions:
 4. Add a brief comment explaining the significance of each data point
 5. Preserve original wording - do NOT paraphrase
 
-Return a JSON array with this structure:
+Return a JSON array with this EXACT structure (use these exact key names):
 [
   {{
-    "category": "Category Name",
-    "key": "Field Name",
-    "value": "Extracted Value",
-    "comment": "Brief explanation of significance"
+    "Category": "Category Name",
+    "Key": "Field Name",
+    "Value": "Extracted Value",
+    "Comments": "Brief explanation of significance"
   }}
 ]
 
+IMPORTANT: Use "Category", "Key", "Value", "Comments" (with capital letters).
 Extract EVERYTHING - leave nothing out. Be thorough and comprehensive."""
 
             response = self.client.chat.completions.create(
@@ -125,9 +126,24 @@ Extract EVERYTHING - leave nothing out. Be thorough and comprehensive."""
                     content = content.split("```")[1].split("```")[0].strip()
                 
                 chunk_data = json.loads(content)
-                all_data.extend(chunk_data)
+                
+                # Normalize keys to match Excel export format
+                normalized_data = []
+                for item in chunk_data:
+                    normalized_item = {
+                        'Category': item.get('Category') or item.get('category', 'Uncategorized'),
+                        'Key': item.get('Key') or item.get('key', 'Unknown'),
+                        'Value': item.get('Value') or item.get('value', ''),
+                        'Comments': item.get('Comments') or item.get('comment') or item.get('comments', '')
+                    }
+                    normalized_data.append(normalized_item)
+                
+                all_data.extend(normalized_data)
+                print(f"    ✓ Extracted {len(normalized_data)} entries from chunk {i+1}")
+                
             except json.JSONDecodeError as e:
                 print(f"  Warning: Could not parse AI response for chunk {i+1}: {e}")
+                print(f"  Response was: {content[:200]}...")
                 # Fallback: try to extract data manually
                 fallback_data = self._fallback_extraction(chunk)
                 all_data.extend(fallback_data)
@@ -165,22 +181,22 @@ Extract EVERYTHING - leave nothing out. Be thorough and comprehensive."""
         
         # Extract dates
         dates = re.findall(r'\b\d{1,2}[/-]\d{1,2}[/-]\d{2,4}\b|\b(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]* \d{1,2},? \d{4}\b', text)
-        for date in dates:
+        for date in dates[:5]:  # Limit to first 5
             data.append({
-                "category": "Dates",
-                "key": "Date Found",
-                "value": date,
-                "comment": "Date extracted from document"
+                "Category": "Dates",
+                "Key": "Date Found",
+                "Value": date,
+                "Comments": "Date extracted from document"
             })
         
         # Extract numbers with context
         numbers = re.findall(r'\b\d+(?:,\d{3})*(?:\.\d+)?\b', text)
         for num in numbers[:10]:  # Limit to first 10
             data.append({
-                "category": "Numerical Data",
-                "key": "Number Found",
-                "value": num,
-                "comment": "Numerical value from document"
+                "Category": "Numerical Data",
+                "Key": "Number Found",
+                "Value": num,
+                "Comments": "Numerical value from document"
             })
         
         return data
@@ -191,8 +207,11 @@ Extract EVERYTHING - leave nothing out. Be thorough and comprehensive."""
         unique_data = []
         
         for entry in data:
-            key_value = (entry.get('key', ''), entry.get('value', ''))
-            if key_value not in seen:
+            # Use both lowercase and uppercase keys for compatibility
+            key = entry.get('Key') or entry.get('key', '')
+            value = entry.get('Value') or entry.get('value', '')
+            key_value = (key, value)
+            if key_value not in seen and key and value:
                 seen.add(key_value)
                 unique_data.append(entry)
         

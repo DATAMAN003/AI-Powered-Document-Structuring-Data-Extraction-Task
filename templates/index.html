@@ -174,6 +174,33 @@
             100% { transform: rotate(360deg); }
         }
         
+        .progress-container {
+            width: 100%;
+            background: #f0f0f0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+        
+        .progress-bar {
+            height: 30px;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        
+        .progress-text {
+            margin-top: 10px;
+            color: #666;
+            font-size: 14px;
+        }
+        
         .demo-link {
             text-align: center;
             margin-top: 20px;
@@ -206,7 +233,11 @@
         
         <div class="loading" id="loading">
             <div class="spinner"></div>
-            <p>Processing your document...</p>
+            <p id="loadingText">Processing your document...</p>
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar">0%</div>
+            </div>
+            <div class="progress-text" id="progressText">Initializing...</div>
         </div>
         
         <div class="error" id="error"></div>
@@ -281,6 +312,32 @@
             error.classList.remove('show');
             result.classList.remove('show');
             
+            // Progress simulation
+            const progressBar = document.getElementById('progressBar');
+            const progressText = document.getElementById('progressText');
+            const loadingText = document.getElementById('loadingText');
+            
+            let progress = 0;
+            const progressInterval = setInterval(() => {
+                if (progress < 90) {
+                    progress += Math.random() * 10;
+                    if (progress > 90) progress = 90;
+                    progressBar.style.width = progress + '%';
+                    progressBar.textContent = Math.round(progress) + '%';
+                    
+                    // Update status text
+                    if (progress < 20) {
+                        progressText.textContent = '📄 Extracting text from PDF...';
+                    } else if (progress < 40) {
+                        progressText.textContent = '🤖 AI identifying document type...';
+                    } else if (progress < 70) {
+                        progressText.textContent = '🧠 AI analyzing and extracting data...';
+                    } else {
+                        progressText.textContent = '📊 Creating structured Excel output...';
+                    }
+                }
+            }, 500);
+            
             try {
                 const response = await fetch('/upload', {
                     method: 'POST',
@@ -288,6 +345,11 @@
                 });
                 
                 const data = await response.json();
+                
+                clearInterval(progressInterval);
+                progressBar.style.width = '100%';
+                progressBar.textContent = '100%';
+                progressText.textContent = '✅ Complete!';
                 
                 if (data.success) {
                     downloadUrl = data.download_url;
@@ -309,15 +371,18 @@
                         `;
                     }
                     
-                    result.classList.add('show');
+                    setTimeout(() => {
+                        loading.classList.remove('show');
+                        result.classList.add('show');
+                    }, 1000);
                 } else {
                     throw new Error(data.error || 'Unknown error');
                 }
             } catch (err) {
+                clearInterval(progressInterval);
                 error.textContent = `Error: ${err.message}`;
                 error.classList.add('show');
                 uploadBtn.disabled = false;
-            } finally {
                 loading.classList.remove('show');
             }
         });
